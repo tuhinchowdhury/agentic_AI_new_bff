@@ -1,6 +1,9 @@
 name: Trigger Analyzer
 
 on:
+  push:
+    branches:
+      - develop
   pull_request:
     branches:
       - develop
@@ -10,15 +13,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Debug Event
+        run: |
+          echo "EVENT NAME: ${{ github.event_name }}"
+
       - name: Trigger Analyzer Repo
         run: |
+          PR_NUMBER=${{ github.event.pull_request.number }}
+
+          # fallback for push event
+          if [ -z "$PR_NUMBER" ]; then
+            PR_NUMBER=0
+          fi
+
           curl -X POST https://api.github.com/repos/tuhinchowdhury/agentic_AI_new/dispatches \
           -H "Accept: application/vnd.github+json" \
           -H "Authorization: Bearer ${{ secrets.PAT_TOKEN }}" \
-          -d '{
-            "event_type": "run-analyzer",
-            "client_payload": {
-              "repo": "agentic_AI_new_bff",
-              "pr_number": '${{ github.event.pull_request.number }}'
-            }
-          }'
+          -d "{\"event_type\":\"run-analyzer\",\"client_payload\":{\"pr_number\":\"$PR_NUMBER\"}}"
