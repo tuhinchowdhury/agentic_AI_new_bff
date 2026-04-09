@@ -1,0 +1,138 @@
+scalar AWSDateTime
+
+# --------------------
+# ENUMS
+# --------------------
+enum Role {
+  ADMIN
+  DOCTOR
+  NURSE
+  USER
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+}
+
+# --------------------
+# TYPES
+# --------------------
+type User {
+  id: ID!
+  firstname: String!
+  lastname: String!
+  email: String!
+  phone: String
+  role: Role!
+  status: Status!
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+}
+
+type DoctorProfile {
+  id: ID!
+  user: User!
+  specialization: String!
+  experience: Int
+}
+
+type Course {
+  id: ID!
+  title: String!
+  description: String
+  credits: Int
+  createdBy: User!
+  createdAt: AWSDateTime
+}
+
+type Enrollment {
+  id: ID!
+  user: User!
+  course: Course!
+  enrolledAt: AWSDateTime
+  completed: Boolean
+}
+
+type Certificate {
+  id: ID!
+  user: User!
+  course: Course!
+  issuedAt: AWSDateTime
+}
+
+# --------------------
+# RESPONSE TYPES
+# --------------------
+type UserResponse {
+  user: User
+  message: String
+}
+
+type UsersResponse {
+  users: [User]
+  totalCount: Int
+}
+
+type CourseResponse {
+  course: Course
+  message: String
+}
+
+type EnrollmentResponse {
+  enrollment: Enrollment
+  message: String
+}
+
+# --------------------
+# INPUT TYPES
+# --------------------
+input CreateUserInput {
+  firstname: String!
+  lastname: String!
+  email: String!
+  phone: String
+  role: Role!
+}
+
+input UpdateUserInput {
+  id: ID!
+  firstname: String
+  lastname: String
+  phone: String
+  status: Status
+}
+
+input CreateCourseInput {
+  title: String!
+  description: String
+  credits: Int
+}
+
+input EnrollInput {
+  userId: ID!
+  courseId: ID!
+}
+
+# --------------------
+# QUERY
+# --------------------
+type Query {
+  getUser(id: ID!): User
+  getUsers: [User]
+  getCourses: [Course]
+  getEnrollments(userId: ID!): [Enrollment]
+  getCertificate(userId: ID!, courseId: ID!): Certificate
+}
+
+# --------------------
+# MUTATION
+# --------------------
+type Mutation {
+  createUser(input: CreateUserInput!): UserResponse
+  updateUser(input: UpdateUserInput!): UserResponse
+  deleteUser(id: ID!): UserResponse
+
+  createCourse(input: CreateCourseInput!): CourseResponse
+  enrollUser(input: EnrollInput!): EnrollmentResponse
+}
