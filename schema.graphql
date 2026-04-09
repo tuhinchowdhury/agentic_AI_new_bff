@@ -20,11 +20,11 @@ enum Status {
 # --------------------
 type User {
   id: ID!
-  firstname: String!
   lastname: String!
   email: String!
   phone: String
   role: Role!
+  status: Status!
   createdAt: AWSDateTime
   updatedAt: AWSDateTime
 }
