@@ -25,6 +25,7 @@ type User {
   email: String!
   phone: String
   role: Role!
+  status: Status!
   createdAt: AWSDateTime
   updatedAt: AWSDateTime
 }
