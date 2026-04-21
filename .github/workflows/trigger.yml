@@ -13,13 +13,12 @@ jobs:
       - name: Debug PR
         run: |
           echo "PR NUMBER: ${{ github.event.pull_request.number }}"
+          echo "HEAD SHA: ${{ github.event.pull_request.head.sha }}"
+          echo "BASE BRANCH: ${{ github.event.pull_request.base.ref }}"
 
       - name: Trigger Analyzer Repo
         run: |
           curl -X POST https://api.github.com/repos/tuhinchowdhury/agentic_AI_new/dispatches \
           -H "Accept: application/vnd.github+json" \
           -H "Authorization: Bearer ${{ secrets.PAT_TOKEN }}" \
-          -d "{\"event_type\":\"run-analyzer\",\"client_payload\":{
-            \"pr_number\":\"${{ github.event.pull_request.number }}\",
-            \"ref\":\"${{ github.event.pull_request.head.sha }}\"
-          }}"
+          -d "{\"event_type\":\"run-analyzer\",\"client_payload\":{\"pr_number\":\"${{ github.event.pull_request.number }}\",\"ref\":\"${{ github.event.pull_request.head.sha }}\",\"base\":\"${{ github.event.pull_request.base.ref }}\"}}"
